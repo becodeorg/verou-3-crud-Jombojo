@@ -8,7 +8,7 @@ ini_set('display_errors', '1');
 ini_set('display_startup_errors', '1');
 error_reporting(E_ALL);
 
-// Load you classes
+// Load your classes
 require_once 'config.php';
 require_once 'classes/DatabaseManager.php';
 require_once 'classes/CardRepository.php';
@@ -29,21 +29,47 @@ $action = $_GET['action'] ?? null;
 // This system will help you to only execute the code you want, instead of all of it (or complex if statements)
 switch ($action) {
     case 'create':
-        create();
+        create($databaseManager);
+        break;
+    case 'edit':
+        edit($databaseManager);
+        break;
+    case 'delete';
+        delete($databaseManager);
         break;
     default:
-        overview();
+        overview($databaseManager);
         break;
 }
 
-function overview()
+function overview($databaseManager)
 {
     // Load your view
     // Tip: you can load this dynamically and based on a variable, if you want to load another view
+    $cardRepository = new CardRepository($databaseManager);
+    $cards = $cardRepository->get();
     require 'overview.php';
 }
 
-function create()
+function create($databaseManager)
 {
-    // TODO: provide the create logic
+    $values = "'{$_GET['name']}', '{$_GET['lvl']}', '{$_GET['type']}'";
+    $cardRepository->create($values);
 }
+
+function edit($databaseManager)
+{
+    $cardRepository = new CardRepository($databaseManager);
+    $cards = $cardRepository->get();
+    $cardRepository-> update();
+}
+
+function delete($databaseManager)
+{
+    $cardRepository = new CardRepository($databaseManager);
+    $cards = $cardRepository->get();
+    $cardRepository->delete();
+}
+
+
+
